@@ -153,12 +153,14 @@ class KLogger
      * Class constructor
      *
      * @param string  $logDirectory File path to the logging directory
+     * @param string  $logBaseFileName Base Filename for log
      * @param integer $severity     One of the pre-defined severity constants
      * @return void
      */
-    public function __construct($logDirectory, $severity)
+    public function __construct($logDirectory, $logBaseFileName, $severity)
     {
         $logDirectory = rtrim($logDirectory, '\\/');
+        $filename = explode(".", $logBaseFileName);
 
         if ($severity === self::OFF) {
             return;
@@ -166,9 +168,10 @@ class KLogger
 
         $this->_logFilePath = $logDirectory
             . DIRECTORY_SEPARATOR
-            . 'log_'
-            . date('Y-m-d')
-            . '.txt';
+            . $filename[0]
+            . "_"
+            . date('Y-m-d');
+        if(!empty($filename[1])) $this->_logFilePath .= "." . $filename[1];
 
         $this->_severityThreshold = $severity;
         if (!file_exists($logDirectory)) {
